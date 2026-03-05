@@ -1,0 +1,202 @@
+[
+  {
+    "defect_id": "BUG-1001",
+    "title": "Login page crashes with expired JWT token",
+    "description": "When a user tries to log in with an expired JSON Web Token, the application throws an unhandled NullPointerException and displays a 500 Internal Server Error page instead of redirecting to the login screen.",
+    "steps": "1. Open the application in Chrome\n2. Wait for the JWT token to expire (or manually set an expired token)\n3. Click on any authenticated page\n4. Observe the crash",
+    "expected": "The application should detect the expired token, clear the session, and redirect the user to the login page with a friendly message.",
+    "actual": "The application crashes with a 500 Internal Server Error. The stack trace shows NullPointerException at AuthService.validateToken():142.",
+    "environment": "Chrome 120, Windows 11, Production server v3.2.1",
+    "logs": "java.lang.NullPointerException\n\tat com.app.auth.AuthService.validateToken(AuthService.java:142)\n\tat com.app.filter.JWTFilter.doFilter(JWTFilter.java:58)"
+  },
+  {
+    "defect_id": "BUG-1002",
+    "title": "User authentication fails when token expires",
+    "description": "Authentication system does not handle expired tokens properly. Users see a blank white page when their session token expires during active use.",
+    "steps": "1. Log into the application\n2. Leave the browser idle for 30 minutes\n3. Try to navigate to the dashboard\n4. Page goes blank",
+    "expected": "Graceful session expiration with redirect to login page and session expired message.",
+    "actual": "Blank white page with no error message. Console shows 'Uncaught TypeError: Cannot read property token of null'.",
+    "environment": "Firefox 121, macOS Sonoma, Staging server",
+    "logs": "TypeError: Cannot read property 'token' of null\n\tat SessionManager.refresh (session.js:89)"
+  },
+  {
+    "defect_id": "BUG-1003",
+    "title": "Dashboard performance degradation with large datasets",
+    "description": "The main dashboard takes over 15 seconds to load when there are more than 10,000 records in the database. The UI becomes unresponsive and users cannot interact with any elements.",
+    "steps": "1. Ensure database has 10000+ records\n2. Navigate to the dashboard\n3. Observe load time and UI responsiveness",
+    "expected": "Dashboard should load within 3 seconds with pagination and lazy loading for large datasets.",
+    "actual": "Dashboard takes 15-20 seconds to load. UI freezes during loading. No pagination is implemented.",
+    "environment": "Chrome 120, Windows 10, 8GB RAM, Production",
+    "logs": "WARN: Query execution time: 12847ms for SELECT * FROM reports"
+  },
+  {
+    "defect_id": "BUG-1004",
+    "title": "Slow dashboard loading with many records",
+    "description": "Dashboard page is extremely slow when the reports table has a large number of entries. The page appears frozen and the loading spinner never completes.",
+    "steps": "1. Load dashboard with large dataset\n2. Wait for page to render",
+    "expected": "Quick page load with virtualized table rendering.",
+    "actual": "Page hangs for 10+ seconds, sometimes crashes the browser tab.",
+    "environment": "Edge 119, Windows 11, 16GB RAM",
+    "logs": ""
+  },
+  {
+    "defect_id": "BUG-1005",
+    "title": "File upload fails for files larger than 10MB",
+    "description": "When users try to upload CSV files larger than 10MB through the data import feature, the upload silently fails without any error message. The progress bar reaches 100% but the file is not processed.",
+    "steps": "1. Go to Settings > Data Import\n2. Click 'Upload CSV'\n3. Select a CSV file larger than 10MB\n4. Click Upload\n5. Progress bar completes but no data appears",
+    "expected": "Either successfully upload large files or display a clear file size limit error message before upload begins.",
+    "actual": "Upload appears to succeed (progress bar reaches 100%) but no data is imported. No error message is shown.",
+    "environment": "Chrome 120, Ubuntu 22.04, Production",
+    "logs": "ERROR: MaxUploadSizeExceededException: Maximum upload size of 10485760 bytes exceeded"
+  },
+  {
+    "defect_id": "BUG-1006",
+    "title": "Email notifications sent with wrong timezone",
+    "description": "Automated email notifications display timestamps in UTC instead of the user's configured timezone. This causes confusion when users receive alerts about events showing incorrect times.",
+    "steps": "1. Set user timezone to IST (UTC+5:30)\n2. Trigger an event that sends email notification\n3. Check the timestamp in the received email",
+    "expected": "Email should display timestamps in the user's configured timezone (IST).",
+    "actual": "All timestamps in emails are in UTC regardless of user timezone settings.",
+    "environment": "Gmail, All browsers, Production",
+    "logs": ""
+  },
+  {
+    "defect_id": "BUG-1007",
+    "title": "Search returns no results for partial matches",
+    "description": "The global search feature only returns results for exact matches. Searching for partial words or phrases returns zero results even when relevant data exists in the system.",
+    "steps": "1. Navigate to the search bar\n2. Type a partial word like 'auth' (expecting results for 'authentication', 'authorization')\n3. Press Enter\n4. Zero results returned",
+    "expected": "Search should support partial matching, fuzzy search, and return relevant results for partial queries.",
+    "actual": "Zero results returned unless the search query exactly matches a title or description.",
+    "environment": "All browsers, Production v3.2.1",
+    "logs": "DEBUG: Search query 'auth' matched 0 documents (using exact match)"
+  },
+  {
+    "defect_id": "BUG-1008",
+    "title": "Password reset email contains broken link",
+    "description": "When users request a password reset, the email they receive contains a link that leads to a 404 page. The reset token in the URL appears to be truncated.",
+    "steps": "1. Click 'Forgot Password' on login page\n2. Enter email address\n3. Click reset link in email\n4. 404 page appears",
+    "expected": "Reset link should lead to the password reset form with a valid token.",
+    "actual": "Link leads to 404 page. Token in URL is truncated to 32 characters instead of full 64 characters.",
+    "environment": "Gmail + Chrome, Production",
+    "logs": "ERROR: Invalid reset token: token length 32, expected 64"
+  },
+  {
+    "defect_id": "BUG-1009",
+    "title": "CSV export includes deleted records",
+    "description": "When exporting data to CSV format, the export includes records that have been soft-deleted. These records should be filtered out from exports.",
+    "steps": "1. Delete some records from the dashboard\n2. Go to Export > CSV\n3. Download the CSV file\n4. Open and check for deleted records",
+    "expected": "CSV export should only include active (non-deleted) records.",
+    "actual": "Deleted records appear in the CSV export with their original data.",
+    "environment": "All browsers, Production",
+    "logs": "SELECT * FROM reports -- missing WHERE deleted_at IS NULL"
+  },
+  {
+    "defect_id": "BUG-1010",
+    "title": "Mobile navigation menu doesn't close after selection",
+    "description": "On mobile devices, the hamburger navigation menu stays open after the user selects a menu item. The user has to manually tap outside the menu to close it.",
+    "steps": "1. Open the app on a mobile device (or resize browser to mobile width)\n2. Tap the hamburger menu icon\n3. Select any menu item\n4. Menu stays open overlaying the content",
+    "expected": "Menu should automatically close after a selection is made.",
+    "actual": "Menu remains open, blocking the content below.",
+    "environment": "iPhone 15, Safari 17, iOS 17.2",
+    "logs": ""
+  },
+  {
+    "defect_id": "BUG-1011",
+    "title": "JWT authentication error causes white screen",
+    "description": "The authentication module throws an error when processing tokens, resulting in a completely white screen for the end user. No error boundary catches this rendering failure.",
+    "steps": "1. Open the web app\n2. If token is invalid or corrupted, the screen goes white\n3. No UI feedback at all",
+    "expected": "An error boundary should catch the rendering failure and display a user-friendly error page with retry options.",
+    "actual": "Complete white screen with no UI. Must manually clear cookies to recover.",
+    "environment": "Chrome 120, Windows 11, Production",
+    "logs": "Uncaught Error: Invalid token signature\n\tat verifyJWT (auth.js:34)"
+  },
+  {
+    "defect_id": "BUG-1012",
+    "title": "API rate limiting not enforced for authenticated users",
+    "description": "Authenticated API users can make unlimited requests without any rate limiting. This has caused server overload during peak hours when automated scripts bombard the API.",
+    "steps": "1. Authenticate with valid API key\n2. Send 1000+ requests per minute\n3. All requests succeed without throttling",
+    "expected": "Rate limiting should be enforced (e.g., 100 requests per minute per user).",
+    "actual": "No rate limiting. Server performance degrades under heavy load.",
+    "environment": "API v2.0, Production",
+    "logs": "WARN: User api_user_42 made 3847 requests in last 60 seconds"
+  },
+  {
+    "defect_id": "BUG-1013",
+    "title": "Data export to CSV contains soft-deleted entries",
+    "description": "The bulk data export feature incorrectly includes entries that were previously soft-deleted by users. The SQL query does not filter by the deleted_at column.",
+    "steps": "1. Soft delete several records\n2. Export all data as CSV\n3. Deleted records still appear in export",
+    "expected": "Only active records should appear in the export.",
+    "actual": "Soft-deleted records are included in the CSV file.",
+    "environment": "Production v3.2, PostgreSQL 15",
+    "logs": "SQL: SELECT * FROM defects ORDER BY created_at -- no WHERE clause for deleted"
+  },
+  {
+    "defect_id": "BUG-1014",
+    "title": "Dark mode toggle breaks chart rendering",
+    "description": "When the user switches to dark mode, the charts on the analytics page fail to re-render with the dark color scheme. Chart labels become invisible against the dark background.",
+    "steps": "1. Navigate to Analytics page\n2. Toggle dark mode\n3. Observe charts",
+    "expected": "Charts should re-render with appropriate dark mode colors.",
+    "actual": "Chart labels and axis text remain in black color, invisible against dark background.",
+    "environment": "Chrome 121, macOS, Production",
+    "logs": ""
+  },
+  {
+    "defect_id": "BUG-1015",
+    "title": "Pagination offset error on filtered results",
+    "description": "When applying filters to a data table and then navigating to page 2, the results show incorrect records. The pagination offset is calculated based on the unfiltered total instead of the filtered count.",
+    "steps": "1. Open data table with 500 records\n2. Apply filter to show 50 matching records\n3. Click page 2\n4. Shows records from the unfiltered dataset",
+    "expected": "Pagination should work correctly with filtered results.",
+    "actual": "Page 2 shows records 51-100 of the unfiltered dataset instead of records 26-50 of the filtered set.",
+    "environment": "All browsers, Production",
+    "logs": "DEBUG: Offset calculation: page * pageSize (unfiltered), should be page * pageSize (filtered)"
+  },
+  {
+    "defect_id": "BUG-1016",
+    "title": "Report dashboard extremely slow with 50k records",
+    "description": "The reporting dashboard becomes unusable when the database contains approximately 50,000 or more report entries. The main query fetches all records without any pagination or data windowing.",
+    "steps": "1. Have 50k+ records in reports table\n2. Open reporting dashboard\n3. Dashboard takes over 30 seconds to render",
+    "expected": "Dashboard should use server-side pagination and load within 2 seconds.",
+    "actual": "Full table scan, all data loaded into memory. Browser tab crashes on low-memory devices.",
+    "environment": "Chrome 120, 4GB RAM laptop, Production",
+    "logs": "ERROR: JavaScript heap out of memory\nFATAL ERROR: CALL_AND_RETRY_LAST Allocation failed"
+  },
+  {
+    "defect_id": "BUG-1017",
+    "title": "Webhook delivery fails silently for HTTPS endpoints",
+    "description": "Webhooks configured with HTTPS URLs fail to deliver without any error logging. The system shows delivery status as 'pending' indefinitely. HTTP endpoints work correctly.",
+    "steps": "1. Configure webhook with HTTPS URL\n2. Trigger an event\n3. Check webhook delivery status",
+    "expected": "Webhook should be delivered to HTTPS endpoints successfully.",
+    "actual": "Delivery status stays 'pending'. No error logged. HTTP webhooks work fine.",
+    "environment": "Production, Node.js 20",
+    "logs": ""
+  },
+  {
+    "defect_id": "BUG-1018",
+    "title": "Concurrent user edits overwrite each other without warning",
+    "description": "When two users edit the same defect report simultaneously, the last save overwrites the first without any conflict detection or merge. No warning is shown to either user.",
+    "steps": "1. User A opens defect BUG-100 for editing\n2. User B opens the same defect BUG-100\n3. User A saves changes\n4. User B saves different changes\n5. User A's changes are lost",
+    "expected": "Optimistic locking or conflict detection should prevent silent data loss.",
+    "actual": "Last write wins. User A's changes are permanently lost.",
+    "environment": "All browsers, Production",
+    "logs": "UPDATE defects SET ... WHERE id = 100 -- no version check"
+  },
+  {
+    "defect_id": "BUG-1019",
+    "title": "Memory leak in real-time notification WebSocket handler",
+    "description": "The WebSocket handler for real-time notifications has a memory leak. Each connected client adds event listeners that are never removed on disconnect, causing server memory to grow continuously.",
+    "steps": "1. Connect 100 WebSocket clients\n2. Disconnect all clients\n3. Monitor server memory\n4. Memory does not decrease after disconnections",
+    "expected": "Memory should be released when WebSocket connections close.",
+    "actual": "Server memory grows by ~2MB per connection and never frees. Server runs out of memory after ~48 hours.",
+    "environment": "Node.js 20, Ubuntu 22.04, Production",
+    "logs": "WARN: Process memory usage: 1.8GB (limit: 2GB)\nERROR: ENOMEM: not enough memory"
+  },
+  {
+    "defect_id": "BUG-1020",
+    "title": "Password reset link broken in email notifications",
+    "description": "Users clicking the password reset link in their email are directed to a non-existent page. The URL construction logic appends the reset token incorrectly, cutting it in half.",
+    "steps": "1. Request password reset\n2. Open email\n3. Click reset link\n4. Page not found (404)",
+    "expected": "The password reset link should direct to a functional reset page.",
+    "actual": "Link resolves to /reset?token=abc123 where full token should be abc123def456 (64 chars). Only first half is included.",
+    "environment": "Outlook, Chrome, Production",
+    "logs": "WARN: Password reset token validation failed - token too short (expected 64 chars, got 32)"
+  }
+]
