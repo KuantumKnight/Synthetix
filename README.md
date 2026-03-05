@@ -1,4 +1,4 @@
-# 🧬 SYNTHETIX – Duplicate Defect Finder & Bug Report Enhancer
+# 🧬 DUPDETECT – Duplicate Defect Finder & Bug Report Enhancer
 
 <div align="center">
 
@@ -263,5 +263,5 @@ Built for the AI & Programming Hackathon – 30-Hour Challenge.
 ---
 
 <div align="center">
-<strong>Made with ⚡ by Team Synthetix</strong>
+<strong>Made with ⚡ by Sarvesh M </strong>
 </div>
