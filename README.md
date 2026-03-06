@@ -62,7 +62,7 @@ Response with:
 
 ```bash
 # Clone & install dependencies
-git clone [https://github.com/KuantumKnight/DupDetect]
+git clone https://github.com/KuantumKnight/DupDetect
 cd synthetix
 pip install -r requirements.txt
 
@@ -518,5 +518,6 @@ For questions about Synthetix architecture, implementation, or evaluation:
 ---
 
 **Built with ❤️ for BFSI trust and evidence-based AI. Zero hallucinations. Full auditability.**
+
 
 
