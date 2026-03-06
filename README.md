@@ -4,6 +4,26 @@
 
 ---
 
+## 🛠️ Technology Stack
+
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)
+![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
+![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
+![Pydantic](https://img.shields.io/badge/Pydantic-E92064?style=for-the-badge&logo=pydantic&logoColor=white)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-005571?style=for-the-badge)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![Three.js](https://img.shields.io/badge/three.js%20-%23000000.svg?style=for-the-badge&logo=three.js&logoColor=white)
+
+
+---
+
+
 ## 🎯 What It Does
 
 Synthetix analyzes bug reports, **detects duplicates using semantic similarity**, **auto-enriches missing fields**, **clusters related issues**, and **provides auditable evidence trails** for every decision. Designed for high-volume QA environments (500+ engineers, thousands of daily defects).
@@ -518,6 +538,7 @@ For questions about Synthetix architecture, implementation, or evaluation:
 ---
 
 **Built with ❤️ for BFSI trust and evidence-based AI. Zero hallucinations. Full auditability.**
+
 
 
 
