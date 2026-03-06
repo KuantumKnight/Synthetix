@@ -1,0 +1,794 @@
+# Sprint Status Tracker — Synthetix Phase 4, Step 1 (Sprint Planning)
+# Generated: 2026-03-05
+# Project: Synthetix
+# Project Key: NOKEY (file-system tracking)
+# Tracking System: file-system
+# Story Location: _bmad-output/implementation-artifacts/
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review
+#   - done: Story completed and merged
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+
+generated: '2026-03-05'
+project: 'Synthetix'
+project_key: 'NOKEY'
+tracking_system: 'file-system'
+story_location: '_bmad-output/implementation-artifacts/'
+total_epics: 9
+total_stories: 40
+total_requirements_mapped: 70
+
+# 5-PHASE CRITICAL PATH SUMMARY
+# ==============================
+# Phase 1 (Skeleton): 0-4h   — 5 stories
+# Phase 2 (Brain):    5-10h  — 3 stories
+# Phase 3 (Judge):    11-18h — 9 stories
+# Phase 4 (Clerk):    19-24h — 6 stories
+# Phase 5 (Enhancer): 25-30h — 17 stories
+# Total:              30h    — 40 stories
+
+development_status:
+
+  # ============================================================================
+  # PHASE 1: SKELETON (0-4 hours) — FastAPI Setup, Models, Routes
+  # ============================================================================
+
+  epic-1-defect-data-management:
+    status: backlog
+    phase: 1-skeleton
+    required_stories: 4
+    description: 'Ingest, store, and embed defect data in queryable, embeddable format'
+    requirements_mapped: ['FR1', 'FR2', 'FR3', 'FR4']
+    
+  1-1-ingest-defect-data-from-csv-json:
+    status: backlog
+    phase: 1-skeleton
+    estimated_hours: 2
+    requirements: ['FR1']
+    acceptance_criteria:
+      - 'POST /api/v1/ingest accepts files up to 50MB'
+      - 'Parses CSV and JSON formats correctly'
+      - 'Returns success/error report'
+      - 'Tests: test_ingest_csv, test_ingest_json'
+    
+  1-2-store-defects-with-unique-identifiers:
+    status: backlog
+    phase: 1-skeleton
+    estimated_hours: 1
+    requirements: ['FR2']
+    acceptance_criteria:
+      - 'Every defect assigned UUID-4 identifier'
+      - 'Stored in data/defects.jsonl (append-only)'
+      - 'Lookup by defect_id in <100ms'
+      - 'Tests: test_defect_id_uniqueness'
+    
+  1-3-generate-semantic-embeddings-384-dim:
+    status: backlog
+    phase: 2-brain
+    estimated_hours: 3
+    requirements: ['FR3']
+    acceptance_criteria:
+      - 'Uses sentence-transformers/all-MiniLM-L6-v2 (384-dim)'
+      - 'Embedding <100ms per defect (batch_size=32)'
+      - 'Stored in data/models/faiss.index'
+      - 'Tests: test_embedding_generation, test_batch_embedding'
+    blocking_dependencies: ['1-1-ingest-defect-data-from-csv-json']
+    
+  1-4-preserve-original-defect-data-for-citation:
+    status: backlog
+    phase: 1-skeleton
+    estimated_hours: 1
+    requirements: ['FR4']
+    acceptance_criteria:
+      - 'Full original defect stored alongside embeddings'
+      - 'Response includes original_defect field'
+      - 'Citation references point to text snippets'
+      - 'Tests: test_original_data_preservation'
+    
+  epic-1-defect-data-management-retrospective:
+    status: optional
+    phase: 1-skeleton
+    estimated_hours: 0.5
+    description: 'Evaluate data management epic: did ingestion/embedding work as planned?'
+
+  # ============================================================================
+  # PHASE 1: SKELETON (continued) — API Routes
+  # ============================================================================
+
+  epic-8-api-access-integration:
+    status: backlog
+    phase: 1-skeleton
+    required_stories: 10
+    description: 'Expose 5 RESTful endpoints with validated input, consistent response format'
+    requirements_mapped: ['FR37', 'FR38', 'FR39', 'FR40', 'FR41', 'FR42', 'FR43', 'FR44', 'FR45', 'FR46']
+    
+  8-1-expose-5-restful-api-endpoints:
+    status: backlog
+    phase: 1-skeleton
+    estimated_hours: 1
+    requirements: ['FR37']
+    acceptance_criteria:
+      - '5 endpoints: POST /analyze, POST /ingest, GET /clusters, POST /approve-dedup, GET /audit-log'
+      - 'Proper HTTP verbs, /api/v1/ base path'
+      - 'Integration: routers/*.py'
+      - 'Tests: test_endpoint_structure'
+    blocking_dependencies: []
+    
+  8-2-implement-post-analyze-endpoint:
+    status: backlog
+    phase: 2-brain
+    estimated_hours: 0.5
+    requirements: ['FR38']
+    acceptance_criteria:
+      - 'POST /api/v1/analyze accepts JSON defect'
+      - 'Returns AnalysisResponse (decision, confidence, matches, enriched_fields)'
+      - 'Tests: test_analyze_endpoint'
+    blocking_dependencies: ['1-3-generate-semantic-embeddings-384-dim']
+    
+  8-3-implement-post-ingest-endpoint:
+    status: backlog
+    phase: 1-skeleton
+    estimated_hours: 0.5
+    requirements: ['FR39']
+    acceptance_criteria:
+      - 'POST /api/v1/ingest accepts file upload'
+      - 'Returns IngestResponse (success/error counts)'
+      - 'Tests: test_ingest_endpoint'
+    blocking_dependencies: ['1-1-ingest-defect-data-from-csv-json']
+    
+  8-4-implement-get-clusters-endpoint:
+    status: backlog
+    phase: 4-clerk
+    estimated_hours: 1
+    requirements: ['FR40']
+    acceptance_criteria:
+      - 'GET /api/v1/clusters?limit=50&offset=100'
+      - 'Returns ClusterList with pagination'
+      - 'Tests: test_clusters_endpoint'
+    blocking_dependencies: ['5-1-discover-natural-groupings-dbscan']
+    
+  8-5-implement-post-approve-dedup-endpoint:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR41']
+    acceptance_criteria:
+      - 'POST /api/v1/clusters/{clusterId}/approve-dedup'
+      - 'Returns ApprovalResponse with audit_entry_id'
+      - 'Tests: test_approve_dedup_endpoint'
+    blocking_dependencies: ['5-6-recommend-triage-actions-for-clusters']
+    
+  8-6-implement-get-audit-log-endpoint:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR42']
+    acceptance_criteria:
+      - 'GET /api/v1/audit-log with filtering (action, defect_id, date, approver)'
+      - 'Returns AuditLogResponse with pagination'
+      - 'Tests: test_audit_log_endpoint'
+    blocking_dependencies: ['7-1-log-decisions-with-full-context']
+    
+  8-7-return-proper-http-status-codes:
+    status: backlog
+    phase: 1-skeleton
+    estimated_hours: 0.5
+    requirements: ['FR43']
+    acceptance_criteria:
+      - '200 OK, 400 Bad Request, 422 Unprocessable Entity, 500 Server Error'
+      - 'Integration: FastAPI exception handlers'
+      - 'Tests: test_http_status_codes'
+    blocking_dependencies: []
+    
+  8-8-validate-request-input-with-clear-error-messages:
+    status: backlog
+    phase: 1-skeleton
+    estimated_hours: 0.5
+    requirements: ['FR44']
+    acceptance_criteria:
+      - '422 includes field-level error details'
+      - 'Pydantic validation'
+      - 'Tests: test_validation_errors'
+    blocking_dependencies: []
+    
+  8-9-use-consistent-json-response-schema:
+    status: backlog
+    phase: 1-skeleton
+    estimated_hours: 1
+    requirements: ['FR45']
+    acceptance_criteria:
+      - 'All responses: { "status": "success|error", "data": {...}, "metadata": {...} }'
+      - 'Timestamps (ISO 8601), confidence, citations, hallucination_check always present'
+      - 'Tests: test_response_consistency'
+    blocking_dependencies: []
+    
+  8-10-auto-generate-openapi-specification:
+    status: backlog
+    phase: 1-skeleton
+    estimated_hours: 0.5
+    requirements: ['FR46']
+    acceptance_criteria:
+      - 'FastAPI auto-generates OpenAPI at /openapi.json'
+      - 'Swagger UI at /docs'
+      - 'Tests: test_openapi_generation'
+    blocking_dependencies: ['8-1-expose-5-restful-api-endpoints']
+    
+  epic-8-api-access-integration-retrospective:
+    status: optional
+    phase: 1-skeleton
+    estimated_hours: 0.5
+    description: 'Evaluate API design: are endpoints clean and consistent?'
+
+  epic-9-trust-regulatory-compliance:
+    status: backlog
+    phase: 1-skeleton
+    required_stories: 4
+    description: 'Ensure 100% on-premise execution with zero cloud API calls'
+    requirements_mapped: ['FR47', 'FR48', 'FR49', 'FR50']
+    
+  9-1-ensure-on-premise-execution-zero-external-apis:
+    status: backlog
+    phase: 1-skeleton
+    estimated_hours: 0.5
+    requirements: ['FR47']
+    acceptance_criteria:
+      - 'All models run locally (sentence-transformers, Cross-Encoder, FAISS)'
+      - 'Zero egress to OpenAI, HuggingFace, cloud LLMs'
+      - 'Tests: test_no_external_api_calls'
+    blocking_dependencies: []
+    
+  9-2-store-all-data-locally:
+    status: backlog
+    phase: 1-skeleton
+    estimated_hours: 0.5
+    requirements: ['FR48']
+    acceptance_criteria:
+      - 'Defects: data/defects.jsonl, Embeddings: data/models/faiss.index'
+      - 'Audit logs: logs/audit.jsonl (Docker volume)'
+      - 'Zero network transmission'
+      - 'Tests: network monitoring'
+    blocking_dependencies: []
+    
+  9-3-implement-pii-scrubbing:
+    status: backlog
+    phase: 3-judge
+    estimated_hours: 1.5
+    requirements: ['FR49']
+    acceptance_criteria:
+      - 'Detects: credit cards, phone numbers, emails, names'
+      - 'Masks before embedding'
+      - 'Integration: services/preprocessor.py'
+      - 'Tests: test_pii_scrubbing'
+    blocking_dependencies: ['1-3-generate-semantic-embeddings-384-dim']
+    
+  9-4-provide-chain-of-evidence-traceability:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR50']
+    acceptance_criteria:
+      - 'Every decision traced through audit log to original input'
+      - 'Source references with line numbers, text snippets'
+      - 'Complete chain: Input → Decision → Enrichment → Approval → Log'
+      - 'Tests: test_chain_of_evidence'
+    blocking_dependencies: ['7-1-log-decisions-with-full-context']
+    
+  epic-9-trust-regulatory-compliance-retrospective:
+    status: optional
+    phase: 1-skeleton
+    estimated_hours: 0.5
+    description: 'Evaluate compliance: are audit trails and data protection working?'
+
+  # ============================================================================
+  # PHASE 2: BRAIN (5-10 hours) — Embeddings, FAISS Indexing
+  # ============================================================================
+
+  epic-2-semantic-analysis-matching:
+    status: backlog
+    phase: 2-brain
+    required_stories: 4
+    description: 'Retrieve and re-rank semantically similar defects (FAISS + Cross-Encoder)'
+    requirements_mapped: ['FR5', 'FR6', 'FR7', 'FR8']
+    
+  2-1-retrieve-top-5-candidates-faiss-lessthan500ms:
+    status: backlog
+    phase: 2-brain
+    estimated_hours: 2
+    requirements: ['FR5']
+    acceptance_criteria:
+      - 'FAISS index created with all defects'
+      - 'Query time <50ms (p95)'
+      - 'Returns top 5 (or fewer if <5 defects)'
+      - 'Tests: test_faiss_retrieval_latency'
+    blocking_dependencies: ['1-3-generate-semantic-embeddings-384-dim']
+    
+  2-2-re-rank-with-cross-encoder-fine-tuned-re-ranker:
+    status: backlog
+    phase: 3-judge
+    estimated_hours: 2
+    requirements: ['FR6']
+    acceptance_criteria:
+      - 'Uses cross-encoder/ms-marco-TinyBERT-L-2-v2'
+      - 'Re-ranking latency <300ms'
+      - 'Returns re-ranked list with updated scores'
+      - 'Tests: test_cross_encoder_reranking'
+    blocking_dependencies: ['2-1-retrieve-top-5-candidates-faiss-lessthan500ms']
+    
+  2-3-calculate-semantic-similarity-scores-0-0-to-1-0:
+    status: backlog
+    phase: 3-judge
+    estimated_hours: 1
+    requirements: ['FR7']
+    acceptance_criteria:
+      - 'Cross-Encoder output normalized to 0.0-1.0'
+      - 'Scores interpretable: 0.85+ high, 0.70-0.84 medium, <0.70 low'
+      - 'Tests: test_similarity_score_range'
+    blocking_dependencies: ['2-2-re-rank-with-cross-encoder-fine-tuned-re-ranker']
+    
+  2-4-compare-defects-across-multiple-dimensions:
+    status: backlog
+    phase: 3-judge
+    estimated_hours: 1
+    requirements: ['FR8']
+    acceptance_criteria:
+      - 'Match explanation covers: title, error codes, stack trace, environment, logs'
+      - 'Evidence field shows contribution of each attribute'
+      - 'Tests: test_multi_dimension_comparison'
+    blocking_dependencies: ['2-2-re-rank-with-cross-encoder-fine-tuned-re-ranker']
+    
+  epic-2-semantic-analysis-matching-retrospective:
+    status: optional
+    phase: 2-brain
+    estimated_hours: 0.5
+    description: 'Evaluate semantic matching: is FAISS+Cross-Encoder meeting latency targets?'
+
+  # ============================================================================
+  # PHASE 3: JUDGE (11-18 hours) — Cross-Encoder, Duplicate Detection, Confidence
+  # ============================================================================
+
+  epic-3-defect-enrichment-field-extraction:
+    status: backlog
+    phase: 3-judge
+    required_stories: 6
+    description: 'Detect missing fields and extract from text (extractive NLP only, zero hallucinations)'
+    requirements_mapped: ['FR9', 'FR10', 'FR11', 'FR12', 'FR13', 'FR14']
+    
+  3-1-detect-missing-structured-fields:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR9']
+    acceptance_criteria:
+      - 'Checks for: error_code, environment, timestamp, module, component'
+      - 'Response includes missing_fields list'
+      - 'Tests: test_missing_field_detection'
+    blocking_dependencies: ['1-2-store-defects-with-unique-identifiers']
+    
+  3-2-extract-missing-fields-from-unstructured-text-extractive-nlp:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 2
+    requirements: ['FR10']
+    acceptance_criteria:
+      - 'Uses regex + NER only (NO language models)'
+      - 'Extracts error codes, environment, timestamps, module/component'
+      - 'Integration: services/enhancer.py'
+      - 'Tests: test_field_extraction, test_no_hallucination'
+    blocking_dependencies: []
+    
+  3-3-assign-confidence-scores-to-extracted-fields:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR11']
+    acceptance_criteria:
+      - 'Every extracted field gets confidence (0.0-1.0)'
+      - 'Auto-populate only if confidence ≥0.85'
+      - 'Flag 0.70-0.84, mark <0.70 as MISSING_DATA'
+      - 'Tests: test_confidence_threshold'
+    blocking_dependencies: ['3-2-extract-missing-fields-from-unstructured-text-extractive-nlp']
+    
+  3-4-mark-extracted-fields-with-metadata:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR12']
+    acceptance_criteria:
+      - 'Fields marked: is_inferred, source_reference, confidence_score'
+      - 'Example: { "error_code": "E1234", "is_inferred": true, "source": "stack_trace_line_5", "confidence": 0.92 }'
+      - 'Tests: test_enrichment_metadata'
+    blocking_dependencies: ['3-3-assign-confidence-scores-to-extracted-fields']
+    
+  3-5-mark-unreliable-extractions-as-missing-data:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR13']
+    acceptance_criteria:
+      - 'Confidence <0.70 → MISSING_DATA status'
+      - 'Never invent plausible values (zero hallucination)'
+      - 'Include explanation'
+      - 'Tests: test_missing_data_marker'
+    blocking_dependencies: ['3-3-assign-confidence-scores-to-extracted-fields']
+    
+  3-6-sanitize-sensitive-data-pii-scrubbing:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1.5
+    requirements: ['FR14']
+    acceptance_criteria:
+      - 'Detects and masks: credit cards, emails, phone numbers'
+      - 'Applied BEFORE embedding'
+      - 'Integration: services/preprocessor.py'
+      - 'Tests: test_pii_scrubbing'
+    blocking_dependencies: ['1-3-generate-semantic-embeddings-384-dim']
+    
+  epic-3-defect-enrichment-field-extraction-retrospective:
+    status: optional
+    phase: 3-judge
+    estimated_hours: 0.5
+    description: 'Evaluate enrichment: is field extraction accurate and free of hallucinations?'
+
+  epic-4-duplicate-detection-decision-making:
+    status: backlog
+    phase: 3-judge
+    required_stories: 5
+    description: 'Classify defects as DUPLICATE, POSSIBLE_DUPLICATE, or NEW with confidence'
+    requirements_mapped: ['FR15', 'FR16', 'FR17', 'FR18', 'FR19']
+    
+  4-1-classify-defects-into-three-categories:
+    status: backlog
+    phase: 3-judge
+    estimated_hours: 1
+    requirements: ['FR15']
+    acceptance_criteria:
+      - 'Logic: ≥0.85 DUPLICATE, 0.70-0.84 POSSIBLE_DUPLICATE, <0.70 NEW'
+      - 'Response: decision: "DUPLICATE" | "POSSIBLE_DUPLICATE" | "NEW"'
+      - 'Tests: test_classification'
+    blocking_dependencies: ['2-3-calculate-semantic-similarity-scores-0-0-to-1-0']
+    
+  4-2-provide-confidence-level-for-decision:
+    status: backlog
+    phase: 3-judge
+    estimated_hours: 1
+    requirements: ['FR16']
+    acceptance_criteria:
+      - 'Response includes confidence (0.0-1.0)'
+      - 'Confidence = mean of matched scores (or 0 if NEW)'
+      - 'Tests: test_confidence_calculation'
+    blocking_dependencies: ['2-3-calculate-semantic-similarity-scores-0-0-to-1-0']
+    
+  4-3-calibrate-confidence-to-actionability-thresholds:
+    status: backlog
+    phase: 3-judge
+    estimated_hours: 1
+    requirements: ['FR17']
+    acceptance_criteria:
+      - 'Thresholds: High ≥0.90 (auto), Medium 0.70-0.89 (review), Low <0.70 (discard)'
+      - 'Response includes actionability flag'
+      - 'Tests: test_actionability_thresholds'
+    blocking_dependencies: ['4-2-provide-confidence-level-for-decision']
+    
+  4-4-return-top-5-matched-defects:
+    status: backlog
+    phase: 3-judge
+    estimated_hours: 0.5
+    requirements: ['FR18']
+    acceptance_criteria:
+      - 'Response includes matches array (up to 5)'
+      - 'Each match: defect_id, title, score, confidence'
+      - 'Tests: test_top_5_matches'
+    blocking_dependencies: ['2-2-re-rank-with-cross-encoder-fine-tuned-re-ranker']
+    
+  4-5-generate-match-explanation-summary:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1.5
+    requirements: ['FR19']
+    acceptance_criteria:
+      - 'Summary includes: shared error codes, similar titles, environment, stack traces'
+      - 'Uses extractive approach (cites actual text)'
+      - 'Tests: test_match_summary'
+    blocking_dependencies: ['2-4-compare-defects-across-multiple-dimensions']
+    
+  epic-4-duplicate-detection-decision-making-retrospective:
+    status: optional
+    phase: 3-judge
+    estimated_hours: 0.5
+    description: 'Evaluate duplicate detection: are confidence scores calibrated correctly?'
+
+  # ============================================================================
+  # PHASE 4: CLERK (19-24 hours) — DBSCAN Clustering, Quality Validation
+  # ============================================================================
+
+  epic-5-intelligent-clustering:
+    status: backlog
+    phase: 4-clerk
+    required_stories: 6
+    description: 'Discover natural groupings with DBSCAN + quality validation'
+    requirements_mapped: ['FR20', 'FR21', 'FR22', 'FR23', 'FR24', 'FR25']
+    
+  5-1-discover-natural-groupings-dbscan:
+    status: backlog
+    phase: 4-clerk
+    estimated_hours: 2
+    requirements: ['FR20']
+    acceptance_criteria:
+      - 'DBSCAN eps=0.35, min_samples=2'
+      - 'Clustering runs on all embeddings'
+      - 'Returns cluster assignments'
+      - 'Tests: test_dbscan_clustering'
+    blocking_dependencies: ['1-3-generate-semantic-embeddings-384-dim']
+    
+  5-2-assign-cluster-ids-and-names:
+    status: backlog
+    phase: 4-clerk
+    estimated_hours: 1
+    requirements: ['FR21']
+    acceptance_criteria:
+      - 'Each cluster: UUID cluster_id + human-readable name'
+      - 'Name derived from common error code or dominant module'
+      - 'Tests: test_cluster_naming'
+    blocking_dependencies: ['5-1-discover-natural-groupings-dbscan']
+    
+  5-3-weight-functional-context-no-false-positives:
+    status: backlog
+    phase: 4-clerk
+    estimated_hours: 1.5
+    requirements: ['FR22']
+    acceptance_criteria:
+      - 'Weights title, module, component higher'
+      - 'Two "timeout" bugs from different modules do NOT cluster'
+      - 'Tests: test_contextual_clustering'
+    blocking_dependencies: ['5-1-discover-natural-groupings-dbscan']
+    
+  5-4-generate-cluster-quality-metric-silhouette-score:
+    status: backlog
+    phase: 4-clerk
+    estimated_hours: 1
+    requirements: ['FR23']
+    acceptance_criteria:
+      - 'Calculate Silhouette Score'
+      - 'Target: ≥0.6 indicates good separation'
+      - 'Warn if <0.6'
+      - 'Tests: test_silhouette_score'
+    blocking_dependencies: ['5-1-discover-natural-groupings-dbscan']
+    
+  5-5-retrieve-clusters-with-metadata:
+    status: backlog
+    phase: 4-clerk
+    estimated_hours: 1
+    requirements: ['FR24']
+    acceptance_criteria:
+      - 'GET /api/v1/clusters returns all clusters'
+      - 'Response: cluster_id, name, defect_count, samples, Silhouette, quality'
+      - 'Pagination: limit, offset'
+      - 'Tests: test_clusters_endpoint'
+    blocking_dependencies: ['5-2-assign-cluster-ids-and-names']
+    
+  5-6-recommend-triage-actions-for-clusters:
+    status: backlog
+    phase: 4-clerk
+    estimated_hours: 1
+    requirements: ['FR25']
+    acceptance_criteria:
+      - 'Recommendations: BULK_DEDUP_CANDIDATES, SEPARATE_MODULES, REVIEW_MANUAL'
+      - 'Based on size, Silhouette, dominant types'
+      - 'Tests: test_action_recommendations'
+    blocking_dependencies: ['5-4-generate-cluster-quality-metric-silhouette-score']
+    
+  epic-5-intelligent-clustering-retrospective:
+    status: optional
+    phase: 4-clerk
+    estimated_hours: 0.5
+    description: 'Evaluate clustering: are groupings meaningful and actionable?'
+
+  # ============================================================================
+  # PHASE 5: ENHANCER (25-30 hours) — Audit Logging, Evidence, Compliance
+  # ============================================================================
+
+  epic-6-evidence-citability-zero-hallucination-guarantee:
+    status: backlog
+    phase: 5-enhancer
+    required_stories: 5
+    description: 'Guarantee zero hallucination via extractive summaries + explicit citations'
+    requirements_mapped: ['FR26', 'FR27', 'FR28', 'FR29', 'FR30']
+    
+  6-1-include-source-citations-in-responses:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR26']
+    acceptance_criteria:
+      - 'Every decision includes source citations'
+      - 'Format: { "source": "defect_id: D123", "text": "...", "location": "line X" }'
+      - 'Tests: test_source_citations'
+    blocking_dependencies: ['1-4-preserve-original-defect-data-for-citation']
+    
+  6-2-provide-traceable-references:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR27']
+    acceptance_criteria:
+      - 'Citations include line numbers or offsets'
+      - 'Text snippets (10-50 chars) showing exact match'
+      - 'Tests: test_traceable_references'
+    blocking_dependencies: ['1-4-preserve-original-defect-data-for-citation']
+    
+  6-3-include-hallucination-check-flag:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR28']
+    acceptance_criteria:
+      - 'Response includes hallucination_check with 3 flags'
+      - 'summary_grounded_in_source, all_citations_traceable, fields_not_hallucinated'
+      - 'All three must be true for approval'
+      - 'Tests: test_hallucination_check_always_true'
+    blocking_dependencies: ['6-1-include-source-citations-in-responses']
+    
+  6-4-use-extractive-summaries-only-no-generation:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR29']
+    acceptance_criteria:
+      - 'Summary = concatenation of text snippets'
+      - 'Never uses language model for generation'
+      - 'Each sentence backed by citation'
+      - 'Tests: test_extractive_summary_only'
+    blocking_dependencies: ['3-2-extract-missing-fields-from-unstructured-text-extractive-nlp']
+    
+  6-5-never-invent-missing-field-values:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR30']
+    acceptance_criteria:
+      - 'If field cannot be reliably extracted, mark MISSING_DATA'
+      - 'Never return guesses'
+      - 'Include explanation'
+      - 'Tests: test_no_hallucinated_fields'
+    blocking_dependencies: ['3-5-mark-unreliable-extractions-as-missing-data']
+    
+  epic-6-evidence-citability-zero-hallucination-guarantee-retrospective:
+    status: optional
+    phase: 5-enhancer
+    estimated_hours: 0.5
+    description: 'Evaluate evidence: are all claims backed by sources and hallucination-free?'
+
+  epic-7-audit-logging-compliance:
+    status: backlog
+    phase: 5-enhancer
+    required_stories: 6
+    description: 'Log every decision, enrichment, approval in compliance-ready format'
+    requirements_mapped: ['FR31', 'FR32', 'FR33', 'FR34', 'FR35', 'FR36']
+    
+  7-1-log-decisions-with-full-context:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR31']
+    acceptance_criteria:
+      - 'Log format (JSONL): timestamp, action, defect_id, matched_defect, confidence, actor, rationale'
+      - 'Logged to: logs/audit.jsonl (append-only)'
+      - 'Tests: test_decision_logging'
+    blocking_dependencies: []
+    
+  7-2-log-all-enriched-fields-with-metadata:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR32']
+    acceptance_criteria:
+      - 'Log per enriched field: name, value, confidence, source, approval, approver'
+      - 'Tests: test_field_enrichment_logging'
+    blocking_dependencies: ['3-4-mark-extracted-fields-with-metadata']
+    
+  7-3-log-bulk-approval-workflows:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR33']
+    acceptance_criteria:
+      - 'Log per bulk approval: timestamp, cluster_id, approver, defects, parent, notes'
+      - 'Integration: routers/clusters.py'
+      - 'Tests: test_approval_logging'
+    blocking_dependencies: ['5-6-recommend-triage-actions-for-clusters']
+    
+  7-4-make-audit-logs-immutable-and-queryable:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR34']
+    acceptance_criteria:
+      - 'Audit log append-only (no DELETE/UPDATE)'
+      - 'Query endpoint: GET /api/v1/audit-log with filters'
+      - 'Tests: test_audit_log_query'
+    blocking_dependencies: ['7-1-log-decisions-with-full-context']
+    
+  7-5-enforce-segregation-of-duties:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR35']
+    acceptance_criteria:
+      - 'System proposes, QA Lead approves'
+      - 'Both actions logged separately'
+      - 'Tests: test_segregation_of_duties'
+    blocking_dependencies: ['8-5-implement-post-approve-dedup-endpoint']
+    
+  7-6-enforce-human-approval-gates:
+    status: backlog
+    phase: 5-enhancer
+    estimated_hours: 1
+    requirements: ['FR36']
+    acceptance_criteria:
+      - 'Bulk dedup requires human approval via POST endpoint'
+      - 'System cannot auto-execute'
+      - 'Tests: test_approval_gate_required'
+    blocking_dependencies: ['8-5-implement-post-approve-dedup-endpoint']
+    
+  epic-7-audit-logging-compliance-retrospective:
+    status: optional
+    phase: 5-enhancer
+    estimated_hours: 0.5
+    description: 'Evaluate compliance: are audit trails complete and immutable?'
+
+---
+
+# SPRINT SUMMARY
+# ==============
+# 
+# Total Requirements: 70 (50 FR + 20 NFR)
+# Total Epics: 9
+# Total Stories: 40
+# Total Retrospectives: 9 (optional)
+# 
+# Phase 1 (Skeleton):   4h  — 5 Stories
+# Phase 2 (Brain):      6h  — 3 Stories
+# Phase 3 (Judge):     11h  — 9 Stories (includes 9-3, 3-6)
+# Phase 4 (Clerk):      7h  — 6 Stories
+# Phase 5 (Enhancer):  11h  — 17 Stories
+# 
+# Total Development:   39h (1h buffer within 30h target via overlaps)
+# 
+# CRITICAL PATH:
+# 1-1 → 1-3 → 2-1 → 2-2-2-4 → 4-1 → 5-1 → 6-1-7-1 → 8-6
+# 
+# PARALLEL OPPORTUNITIES:
+# - Phase 1: All route/model stories (8-1 through 8-10, 9-1, 9-2)
+# - Phase 2: FAISS + Embedding in parallel
+# - Phase 3: Cross-Encoder + Classification in parallel
+# - Phase 4: All clustering stories except 5-2 (depends on 5-1)
+# - Phase 5: Enrichment, logging, evidence all independent
+# 
+# TEAM ALLOCATION:
+# - Developer 1: Core pipeline (1-3, 2-1-2, 4-1-4, 5-1-5, 6-1)
+# - Developer 2: API routes (8-1-8-10) + PII scrubbing (9-3)
+# - Developer 3: Enrichment (3-2-3-6, 6-4-6-5) + Audit logging (7-1-7-6)
+# 
+# NEXT STEPS:
+# 1. Assign developers to stories
+# 2. Begin Phase 1 stories (0-4h deployment window)
+# 3. Monitor latency budgets (500ms API, 400ms clustering)
+# 4. Validate zero-hallucination guarantee (FR26-FR30)
