@@ -40,25 +40,24 @@ Synthetix analyzes bug reports, **detects duplicates using semantic similarity**
 
 ## 🏗️ System Architecture
 
-```
-User Request
-    ↓
-[Skeleton] FastAPI Endpoint (/analyze, /ingest, /clusters)
-    ↓
-[Brain] Bi-Encoder (all-MiniLM-L6-v2) + FAISS Retrieval (40ms)
-    ↓ (Top-5 candidates)
-[Judge] Cross-Encoder Reranking (ms-marco-TinyBERT-L2) (250ms)
-    ↓ (Ranked matches with scores)
-[Clerk] DBSCAN Clustering (100ms) + Silhouette Validation
-    ↓
-[Enhancer] Field Extraction (100ms) + Evidence Citation Building
-    ↓
-Response with:
-  - Final decision (DUPLICATE / POSSIBLE_DUPLICATE / NEW)
-  - Confidence score (0.0–1.0)
-  - Evidence trail (field-level match details)
-  - Enriched fields (auto-filled missing data)
-  - Audit log entry (for compliance)
+```mermaid
+graph TD
+    User([User Request]) --> Skel[FastAPI Skeleton]
+    subgraph Brain[The Intelligence Layer]
+        Skel --> Bi[Bi-Encoder: all-MiniLM-L6-v2]
+        Bi --> FAISS[FAISS Vector Retrieval]
+    end
+    subgraph Judge[The Accuracy Layer]
+        FAISS -- Top 5 Candidates --> Cross[Cross-Encoder: ms-marco-TinyBERT-L2]
+    end
+    subgraph Processing[The Enrichment Layer]
+        Cross --> DBSCAN[DBSCAN Clustering]
+        DBSCAN --> NER[Extractive NER Enhancer]
+    end
+    NER --> Output{Response}
+    Output --> Decision[Final Decision & Confidence]
+    Output --> Evidence[Evidence Trail & Citations]
+    Output --> Audit[Audit Log Entry]
 ```
 
 ### Component Breakdown
@@ -538,6 +537,7 @@ For questions about Synthetix architecture, implementation, or evaluation:
 ---
 
 **Built with ❤️ for BFSI trust and evidence-based AI. Zero hallucinations. Full auditability.**
+
 
 
 
