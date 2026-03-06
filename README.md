@@ -499,8 +499,8 @@ CONFIDENCE_MEDIUM_THRESHOLD=0.70
 
 ## 📚 Further Reading
 
-- [Product Requirements Document](../_bmad-output/planning-artifacts/prd.md) — Full 70-requirement spec
-- [Architecture Decision Document](../_bmad-output/planning-artifacts/architecture.md) — Technical design rationale
+- [Product Requirements Document](../main/_bmad-output/planning-artifacts/prd.md) — Full 70-requirement spec
+- [Architecture Decision Document](../main/_bmad-output/planning-artifacts/architecture.md) — Technical design rationale
 - [Sentence-Transformers Documentation](https://www.sbert.net/) — Embedding model details
 - [FAISS Documentation](https://faiss.ai/) — Vector search optimization
 - [DBSCAN Scientific Paper](https://en.wikipedia.org/wiki/DBSCAN) — Clustering algorithm
@@ -518,3 +518,4 @@ For questions about Synthetix architecture, implementation, or evaluation:
 ---
 
 **Built with ❤️ for BFSI trust and evidence-based AI. Zero hallucinations. Full auditability.**
+
