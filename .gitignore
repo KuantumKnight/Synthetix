@@ -24,8 +24,3 @@ models/
 # Logs
 logs/
 
-# AI Agent internal files
-.agent/
-.claude/
-_bmad/
-_bmad-output/
