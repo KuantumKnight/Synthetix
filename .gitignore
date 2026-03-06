@@ -1,0 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Large Data Files
+mass.zip
+data/master_defects.csv
+data/master_defects.json
+data/bugzilla/
+data/bugzilla reports/
+data/gitbugs/
+
+# Database
+chroma_db/
+
+# Models
+models/
+
+# Logs
+logs/
+
+# AI Agent internal files
+.agent/
+.claude/
+_bmad/
+_bmad-output/
