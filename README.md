@@ -473,7 +473,6 @@ CONFIDENCE_MEDIUM_THRESHOLD=0.70
 For questions about Synthetix architecture, implementation, or evaluation:
 - **Author:** Sarvesh M
 - **Date:** 2026-03-05
-- **Status:** Hackathon Submission (MVP Complete)
 - **Project Knowledge:** See `docs/` folder for detailed technical documentation
 
 ---
