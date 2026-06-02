@@ -221,8 +221,8 @@ function EnrichMockup() {
         {fields.map((f) => (
           <div key={f.k} className="flex items-center justify-between rounded-lg border border-border/60 px-3 py-2">
             <span className="font-mono text-xs text-muted-foreground">{f.k}</span>
-            <span className="flex items-center gap-2 text-sm">
-              {f.v}
+            <span className="flex items-center gap-2">
+              <span className="font-mono text-xs">{f.v}</span>
               <span
                 className={
                   "rounded-full px-2 py-0.5 text-[10px] font-medium " +

@@ -466,7 +466,7 @@ function Result({ result }: { result: AnalysisResult }) {
                 >
                   <span className="font-mono text-xs text-muted-foreground">{k}</span>
                   <span className="flex items-center gap-2 text-sm">
-                    <span className="max-w-[14rem] truncate">
+                    <span className="max-w-[14rem] truncate font-mono text-xs">
                       {f.value ?? "—"}
                     </span>
                     <EnrichBadge status={f.status} />
