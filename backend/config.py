@@ -20,6 +20,14 @@ class Settings(BaseModel):
     API_PREFIX: str = "/api/v1"
     HOST: str = "0.0.0.0"
     PORT: int = 8000
+    # Allowed CORS origins (override via env in production)
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:5173",  # Vite dev server
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+    ]
 
     # Embedding model
     # Use locally fine-tuned weights if available, otherwise fallback to baseline

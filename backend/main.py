@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from backend.config import settings
 from backend.routers import analyze, ingest, clusters
@@ -45,7 +46,7 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -73,7 +74,6 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={
             "error": "InternalServerError",
             "message": "An unexpected error occurred.",
-            "detail": str(exc),
         },
     )
 
@@ -84,10 +84,10 @@ app.include_router(ingest.router, prefix=settings.API_PREFIX, tags=["Ingestion"]
 app.include_router(clusters.router, prefix=settings.API_PREFIX, tags=["Clustering"])
 
 
-# Root endpoint
-@app.get("/", tags=["Root"])
-async def root():
-    """Root endpoint — welcome message."""
+# Service metadata (kept under /api so the SPA can own "/")
+@app.get("/api", tags=["Root"])
+async def service_info():
+    """Service metadata endpoint."""
     return {
         "service": "Synthetix",
         "description": "Duplicate Defect Finder & Bug Report Enhancer",
@@ -95,3 +95,21 @@ async def root():
         "docs": "/docs",
         "health": f"{settings.API_PREFIX}/health",
     }
+
+
+# Serve the built React SPA (frontend/dist) at "/" when present.
+# In dev, run Vite separately (it proxies /api here); this mount is skipped.
+_FRONTEND_DIST = settings.PROJECT_ROOT / "frontend" / "dist"
+if _FRONTEND_DIST.is_dir():
+    app.mount("/", StaticFiles(directory=str(_FRONTEND_DIST), html=True), name="spa")
+    log.info(f"Serving SPA from {_FRONTEND_DIST}")
+else:
+    @app.get("/", tags=["Root"])
+    async def root():
+        """Fallback root when the SPA has not been built."""
+        return {
+            "service": "Synthetix",
+            "message": "Frontend not built. Run `npm run build` in ./frontend, or use the Vite dev server.",
+            "docs": "/docs",
+            "health": f"{settings.API_PREFIX}/health",
+        }

@@ -226,9 +226,6 @@ class DuplicateDetector:
                 cosine_sim = match.get("similarity_score", 0.0)
                 ce_score = match.get("cross_encoder_score", cosine_sim)
 
-                # Use the better of cosine or cross-encoder score
-                final_score = max(cosine_sim, ce_score)
-
                 evidence = self._build_evidence(report, metadata, cosine_sim)
 
                 top_matches.append(

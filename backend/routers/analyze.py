@@ -108,4 +108,6 @@ async def analyze_defect(report: DefectReport) -> AnalysisResult:
         raise handle_synthetix_error(e)
     except Exception as e:
         log.error(f"Unexpected error in analyze: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=500, detail="Analysis failed due to an internal error."
+        )
