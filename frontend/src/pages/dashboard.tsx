@@ -17,6 +17,7 @@ import {
   type HealthResponse,
 } from "@/lib/api";
 import type { RecentAnalysis } from "@/lib/types";
+import { SAMPLE_OVERVIEW } from "@/lib/sample";
 import type { View } from "@/components/nav";
 
 function useCountUp(target: number, run: boolean) {
@@ -95,8 +96,16 @@ export function Dashboard({
     };
   }, []);
 
-  const totalDefects = health?.total_defects ?? overview?.total_defects ?? 0;
-  const totalClusters = health?.total_clusters ?? overview?.total_clusters ?? 0;
+  const realDefects = health?.total_defects ?? overview?.total_defects ?? 0;
+  const realClusters = health?.total_clusters ?? overview?.total_clusters ?? 0;
+
+  // When the backend is empty or unreachable, fall back to representative
+  // sample figures so a first visitor never sees a dead, all-zero dashboard.
+  const empty = loaded && realDefects === 0;
+  const ov = empty ? SAMPLE_OVERVIEW : overview;
+  const totalDefects = empty ? SAMPLE_OVERVIEW.total_defects : realDefects;
+  const totalClusters = empty ? SAMPLE_OVERVIEW.total_clusters : realClusters;
+
   const dupes = recent.filter((r) => r.decision !== "new_defect").length;
   const avgConf =
     recent.length > 0
@@ -138,9 +147,7 @@ export function Dashboard({
           icon={Boxes}
           label="Clusters"
           value={clusters}
-          hint={
-            overview ? `${overview.noise_count} noise points` : "DBSCAN groups"
-          }
+          hint={ov ? `${ov.noise_count} noise points` : "DBSCAN groups"}
         />
         <StatCard
           icon={Copy}
@@ -162,8 +169,8 @@ export function Dashboard({
           <CardHeader>
             <CardTitle>Cluster map</CardTitle>
             <CardDescription>
-              {overview
-                ? `${overview.total_clusters} clusters · silhouette ${overview.silhouette_score.toFixed(2)}`
+              {ov
+                ? `${ov.total_clusters} clusters · silhouette ${ov.silhouette_score.toFixed(2)}`
                 : "Semantic grouping of indexed defects"}
             </CardDescription>
           </CardHeader>
@@ -172,12 +179,12 @@ export function Dashboard({
               <ClusterViz
                 totalDefects={totalDefects}
                 totalClusters={totalClusters}
-                clusters={overview?.clusters}
+                clusters={ov?.clusters}
               />
             </div>
-            {overview && overview.clusters.length > 0 && (
+            {ov && ov.clusters.length > 0 && (
               <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                {overview.clusters.slice(0, 4).map((c) => (
+                {ov.clusters.slice(0, 4).map((c) => (
                   <div
                     key={c.cluster_id}
                     className="flex items-center justify-between rounded-lg border border-border/60 px-3 py-2"

@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { ScanSearch, AlertTriangle, FileText, Quote, ShieldCheck } from "lucide-react";
+import {
+  ScanSearch,
+  AlertTriangle,
+  FileText,
+  Quote,
+  ShieldCheck,
+  CornerDownRight,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -22,6 +29,7 @@ import {
   type DefectReport,
 } from "@/lib/api";
 import type { RecentAnalysis } from "@/lib/types";
+import { DEMO_ANALYZE, SAMPLE_DEFECT, sampleAnalysis } from "@/lib/sample";
 import { cn } from "@/lib/utils";
 
 const EMPTY: DefectReport = {
@@ -35,18 +43,6 @@ const EMPTY: DefectReport = {
   logs: "",
 };
 
-const SAMPLE: DefectReport = {
-  defect_id: "BUG-2041",
-  title: "Login fails with expired token",
-  description:
-    "When a user attempts to log in with an expired JWT token, the application crashes instead of prompting re-authentication.",
-  steps: "1. Open login page\n2. Submit credentials with an expired session\n3. Observe crash",
-  expected: "User is shown an 'expired session' message and redirected to re-auth.",
-  actual: "Application returns a 500 Internal Server Error and the page goes blank.",
-  environment: "Chrome 120, Windows 11, Production",
-  logs: "NullPointerException at AuthService.java:142",
-};
-
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const tone = (t: "primary" | "warning" | "success") =>
   t === "success" ? "success" : t === "warning" ? "warning" : "default";
@@ -56,14 +52,19 @@ export function Analyzer({
 }: {
   onAnalyzed: (a: RecentAnalysis) => void;
 }) {
-  const [form, setForm] = useState<DefectReport>(EMPTY);
+  // Prefilled with an example (the "ghost"). It's editable and submittable;
+  // the faded styling clears the moment the visitor focuses or edits a field.
+  const [form, setForm] = useState<DefectReport>(SAMPLE_DEFECT);
+  const [ghost, setGhost] = useState(true);
   const [step, setStep] = useState(-1);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const set = (k: keyof DefectReport) => (v: string) =>
+  const set = (k: keyof DefectReport) => (v: string) => {
+    setGhost(false);
     setForm((f) => ({ ...f, [k]: v }));
+  };
 
   const valid =
     form.defect_id.trim() && form.title.trim() && form.description.trim();
@@ -91,7 +92,11 @@ export function Analyzer({
       setStep(1);
       await sleep(550);
       setStep(2);
-      const req = api.analyze(payload);
+      // Canned result client-side (no backend needed); flip DEMO_ANALYZE in
+      // lib/sample.ts to call the real /api/v1/analyze endpoint instead.
+      const req = DEMO_ANALYZE
+        ? Promise.resolve(sampleAnalysis(payload))
+        : api.analyze(payload);
       await sleep(500);
       setStep(3);
       await sleep(350);
@@ -139,22 +144,31 @@ export function Analyzer({
       <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
         {/* ── Form ── */}
         <Card className="animate-fade-up">
-          <CardHeader className="flex-row items-center justify-between">
-            <div>
-              <CardTitle>Defect report</CardTitle>
-              <CardDescription>Fields marked * are required.</CardDescription>
-            </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setForm(SAMPLE)}
-            >
-              Load sample
-            </Button>
+          <CardHeader>
+            <CardTitle>Defect report</CardTitle>
+            <CardDescription>
+              {ghost ? (
+                <span className="flex items-center gap-1.5">
+                  <CornerDownRight className="size-3.5 text-primary" />
+                  Prefilled with an example — just press{" "}
+                  <span className="font-medium text-foreground">Analyze</span>,
+                  or edit any field.
+                </span>
+              ) : (
+                "Fields marked * are required."
+              )}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={analyze} className="space-y-5">
+            <form
+              onSubmit={analyze}
+              onFocusCapture={() => setGhost(false)}
+              className={cn(
+                "space-y-5",
+                ghost &&
+                  "[&_input]:text-muted-foreground [&_textarea]:text-muted-foreground"
+              )}
+            >
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Field label="Defect ID *" htmlFor="defect_id">
                   <Input
@@ -245,6 +259,7 @@ export function Analyzer({
                   variant="ghost"
                   onClick={() => {
                     setForm(EMPTY);
+                    setGhost(false);
                     setResult(null);
                     setError(null);
                     setStep(-1);
