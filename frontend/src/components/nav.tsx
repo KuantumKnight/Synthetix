@@ -25,8 +25,8 @@ export function Nav({
   return (
     <header className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4">
       <GlassSurface
-        distort={false}
-        className="glass pointer-events-auto w-full max-w-5xl items-center justify-between rounded-2xl px-3 py-2"
+        intensity="chrome"
+        className="pointer-events-auto w-full max-w-5xl items-center justify-between rounded-2xl px-3 py-2 shadow-lg"
       >
         <div className="flex w-full items-center justify-between">
           {/* Brand */}
@@ -109,8 +109,8 @@ export function MobileDock({
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4 md:hidden">
       <GlassSurface
-        distort={false}
-        className="glass pointer-events-auto rounded-2xl px-2 py-1.5"
+        intensity="chrome"
+        className="pointer-events-auto rounded-2xl px-2 py-1.5 shadow-lg"
       >
         <div className="flex items-center gap-1">
           {ITEMS.map(({ id, label, icon: Icon }) => {

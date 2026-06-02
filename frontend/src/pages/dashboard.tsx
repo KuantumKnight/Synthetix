@@ -51,7 +51,7 @@ function StatCard({
   hint?: string;
 }) {
   return (
-    <Card className="transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md">
+    <Card glass className="transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-2xl">
       <CardContent className="pt-6">
         <div className="flex items-center justify-between">
           <span className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -158,7 +158,7 @@ export function Dashboard({
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
         {/* Cluster viz */}
-        <Card className="animate-fade-up">
+        <Card glass className="animate-fade-up">
           <CardHeader>
             <CardTitle>Cluster map</CardTitle>
             <CardDescription>
@@ -194,7 +194,7 @@ export function Dashboard({
         </Card>
 
         {/* Recent */}
-        <Card className="animate-fade-up">
+        <Card glass className="animate-fade-up">
           <CardHeader>
             <CardTitle>Recent analyses</CardTitle>
             <CardDescription>This session</CardDescription>

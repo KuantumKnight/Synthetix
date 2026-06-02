@@ -1,19 +1,29 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { GlassCard } from "@/components/glass/glass-surface";
 
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-2xl border border-border bg-card text-card-foreground shadow-sm",
-      className
-    )}
-    {...props}
-  />
-));
+  React.HTMLAttributes<HTMLDivElement> & { glass?: boolean }
+>(({ className, glass, children, ...props }, ref) => {
+  if (glass) {
+    // GlassCard renders the layered liquid-glass surface; CardHeader/Content
+    // children compose inside it unchanged.
+    return <GlassCard className={className}>{children}</GlassCard>;
+  }
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "rounded-2xl border border-border bg-card text-card-foreground shadow-sm",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+});
 Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<

@@ -116,7 +116,7 @@ export function Docs() {
               ["Enrichment", "Rule-based extraction of structured fields.", "~100ms"],
               ["Evidence", "Citation engine traces every decision to source.", "incl."],
             ].map(([t, d, lat]) => (
-              <Card key={t}>
+              <Card glass key={t}>
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <h3 className="font-serif text-lg font-medium tracking-tight">
@@ -137,7 +137,7 @@ export function Docs() {
         <TabsContent value="api">
           <div className="space-y-4">
             {ENDPOINTS.map((e) => (
-              <Card key={e.path}>
+              <Card glass key={e.path}>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2.5 text-base">
                     <MethodPill method={e.method} />
@@ -159,7 +159,7 @@ export function Docs() {
         <TabsContent value="tiers">
           <div className="space-y-3">
             {TIERS.map((t) => (
-              <Card key={t.name}>
+              <Card glass key={t.name}>
                 <CardContent className="flex flex-wrap items-center justify-between gap-4 pt-6">
                   <div className="flex items-center gap-3">
                     <Badge variant={t.tone}>{t.name}</Badge>

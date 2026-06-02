@@ -138,7 +138,7 @@ export function Analyzer({
 
       <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
         {/* ── Form ── */}
-        <Card className="animate-fade-up">
+        <Card glass className="animate-fade-up">
           <CardHeader className="flex-row items-center justify-between">
             <div>
               <CardTitle>Defect report</CardTitle>
@@ -260,7 +260,7 @@ export function Analyzer({
 
         {/* ── Pipeline + Results ── */}
         <div className="space-y-6">
-          <Card className="animate-fade-up">
+          <Card glass className="animate-fade-up">
             <CardHeader>
               <CardTitle>Pipeline</CardTitle>
               <CardDescription>
@@ -277,7 +277,7 @@ export function Analyzer({
           </Card>
 
           {error && (
-            <Card className="border-destructive/40 animate-fade-up">
+            <Card glass className="border-destructive/40 animate-fade-up">
               <CardContent className="flex items-start gap-3 pt-6">
                 <AlertTriangle className="mt-0.5 size-5 shrink-0 text-destructive" />
                 <div className="text-sm">
@@ -331,7 +331,7 @@ function Result({ result }: { result: AnalysisResult }) {
     comp >= 80 ? "var(--success)" : comp >= 50 ? "var(--warning)" : "var(--destructive)";
 
   return (
-    <Card className="animate-fade-up overflow-hidden">
+    <Card glass className="animate-fade-up overflow-hidden">
       <CardContent className="space-y-6 pt-6">
         {/* Decision header */}
         <div className="flex items-center justify-between">
