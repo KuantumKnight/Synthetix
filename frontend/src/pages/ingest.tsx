@@ -86,7 +86,7 @@ export function Ingest() {
         </p>
       </header>
 
-      <Card glass className="animate-fade-up">
+      <Card className="animate-fade-up">
         <CardHeader>
           <CardTitle>Dataset upload</CardTitle>
           <CardDescription>

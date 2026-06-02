@@ -16,13 +16,6 @@ const CinematicFooter = lazy(() =>
   }))
 );
 
-// three.js terrain — sitewide ambient backdrop so glass surfaces refract it.
-const GLSLHills = lazy(() =>
-  import("@/components/backgrounds/glsl-hills").then((m) => ({
-    default: m.GLSLHills,
-  }))
-);
-
 export default function App() {
   const [view, setView] = useState<View>("landing");
   const [healthy, setHealthy] = useState<boolean | null>(null);
@@ -59,16 +52,6 @@ export default function App() {
   return (
     <div className="relative min-h-screen">
       <GlassFilter />
-
-      {/* Sitewide ambient backdrop — faint animated terrain + readability wash.
-          Glass panels above refract this; the wash keeps plain text legible. */}
-      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <Suspense fallback={null}>
-          <GLSLHills className="opacity-[0.35] [mask-image:radial-gradient(ellipse_80%_70%_at_50%_30%,black,transparent)]" />
-        </Suspense>
-        <div className="absolute inset-0 bg-gradient-to-b from-background/65 via-background/45 to-background/75" />
-      </div>
-
       <Nav view={view} onNavigate={navigate} healthy={healthy} />
 
       <main>

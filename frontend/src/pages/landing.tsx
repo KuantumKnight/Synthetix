@@ -6,8 +6,16 @@ import {
   Quote,
   ArrowRight,
 } from "lucide-react";
+import { lazy, Suspense } from "react";
 import { SectionWithMockup } from "@/components/sections/section-with-mockup";
-import { GlassButton, GlassCard } from "@/components/glass/glass-surface";
+
+// three.js is heavy and only used here — load it after first paint.
+const GLSLHills = lazy(() =>
+  import("@/components/backgrounds/glsl-hills").then((m) => ({
+    default: m.GLSLHills,
+  }))
+);
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { View } from "@/components/nav";
 
@@ -52,8 +60,10 @@ export function Landing({ onNavigate }: { onNavigate: (v: View) => void }) {
     <div className="animate-fade-up">
       {/* ── Hero ── */}
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
-        {/* terrain comes from the sitewide backdrop; just deepen the fade here */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
+        <Suspense fallback={null}>
+          <GLSLHills className="opacity-70 [mask-image:radial-gradient(ellipse_60%_55%_at_50%_45%,black,transparent)]" />
+        </Suspense>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background" />
 
         <div className="relative z-10 mx-auto max-w-3xl px-6 py-32 text-center">
           <Badge variant="outline" className="mb-6 backdrop-blur-sm">
@@ -71,13 +81,18 @@ export function Landing({ onNavigate }: { onNavigate: (v: View) => void }) {
             decision.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-            <GlassButton tone="primary" onClick={() => onNavigate("analyzer")}>
+            <Button size="lg" onClick={() => onNavigate("analyzer")}>
               Analyze a defect
               <ArrowRight />
-            </GlassButton>
-            <GlassButton tone="neutral" onClick={() => onNavigate("dashboard")}>
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="backdrop-blur-sm"
+              onClick={() => onNavigate("dashboard")}
+            >
               View dashboard
-            </GlassButton>
+            </Button>
           </div>
 
           <div className="mx-auto mt-16 grid max-w-lg grid-cols-3 gap-8">
@@ -120,22 +135,20 @@ export function Landing({ onNavigate }: { onNavigate: (v: View) => void }) {
           </div>
           <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {FEATURES.map(({ icon: Icon, title, body }) => (
-              <GlassCard
+              <div
                 key={title}
-                className="group p-6 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-2xl"
+                className="group rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md"
               >
-                <div>
-                  <span className="mb-4 inline-grid size-10 place-items-center rounded-xl bg-primary/15 text-primary transition-transform duration-300 group-hover:scale-[1.08]">
-                    <Icon className="size-5" />
-                  </span>
-                  <h3 className="font-serif text-lg font-medium tracking-tight">
-                    {title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {body}
-                  </p>
-                </div>
-              </GlassCard>
+                <span className="mb-4 inline-grid size-10 place-items-center rounded-xl bg-primary/12 text-primary transition-transform duration-300 group-hover:scale-[1.08]">
+                  <Icon className="size-5" />
+                </span>
+                <h3 className="font-serif text-lg font-medium tracking-tight">
+                  {title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {body}
+                </p>
+              </div>
             ))}
           </div>
         </div>

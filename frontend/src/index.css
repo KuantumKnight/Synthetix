@@ -47,8 +47,7 @@
   --ring: oklch(0.62 0.114 41);
 
   /* liquid-glass surface variables (light) */
-  --glass-bg: oklch(0.99 0.006 90 / 0.5);
-  --glass-panel-bg: oklch(0.99 0.006 90 / 0.78);
+  --glass-bg: oklch(0.99 0.006 90 / 0.55);
   --glass-border: oklch(1 0 0 / 0.55);
   --glass-highlight: oklch(1 0 0 / 0.7);
   --glass-shadow: oklch(0.2 0.01 60 / 0.12);
@@ -90,8 +89,7 @@
   --ring: oklch(0.68 0.123 42);
 
   /* liquid-glass surface variables (dark) */
-  --glass-bg: oklch(0.26 0.006 70 / 0.4);
-  --glass-panel-bg: oklch(0.22 0.006 70 / 0.72);
+  --glass-bg: oklch(0.26 0.006 70 / 0.45);
   --glass-border: oklch(1 0 0 / 0.12);
   --glass-highlight: oklch(1 0 0 / 0.16);
   --glass-shadow: oklch(0 0 0 / 0.4);
