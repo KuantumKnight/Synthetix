@@ -4,7 +4,10 @@
    In prod, FastAPI serves the built SPA at the same origin.
    ============================================================ */
 
-const API_BASE = "/api/v1";
+// Same-origin "/api/v1" by default (Vite proxy in dev, FastAPI StaticFiles in
+// prod). Override with VITE_API_BASE to point a standalone deploy (e.g. Vercel)
+// at a remotely hosted backend.
+const API_BASE = import.meta.env.VITE_API_BASE ?? "/api/v1";
 
 // ---- Request / response types (mirror backend/models/defect.py) ----
 
